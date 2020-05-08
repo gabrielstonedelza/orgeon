@@ -1,0 +1,169 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #d3d3d3;
+  overflow-x: hidden;
+}
+
+* {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a.butt {
+  color: #fff;
+  font-weight: bold;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background: #020024;
+  background: -webkit-gradient(linear, left top, right top, from(#020024), color-stop(35%, #090979), to(#00d4ff));
+  background: linear-gradient(90deg, #020024 0%, #090979 35%, #00d4ff 100%);
+  border-radius: 5px;
+  -webkit-transition: 0.5s ease-in;
+  transition: 0.5s ease-in;
+}
+
+a.butt:hover {
+  background: #ffec8b;
+  color: #000;
+}
+
+#butt {
+  border: none;
+  color: #fff;
+  font-weight: bold;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background: #020024;
+  background: -webkit-gradient(linear, left top, right top, from(#020024), color-stop(35%, #090979), to(#00d4ff));
+  background: linear-gradient(90deg, #020024 0%, #090979 35%, #00d4ff 100%);
+  border-radius: 5px;
+  -webkit-transition: 0.5s ease-in;
+  transition: 0.5s ease-in;
+}
+
+#butt:hover {
+  background: #ffec8b;
+  color: #000;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  background: -webkit-gradient(linear, left top, right top, from(rgba(39, 39, 39, 0.9)), to(rgba(39, 39, 39, 0.3))), url("../images/altitude-clouds-cold-daylight-417173.jpg");
+  background: linear-gradient(to right, rgba(39, 39, 39, 0.9), rgba(39, 39, 39, 0.3)), url("../images/altitude-clouds-cold-daylight-417173.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.just-main .userdetails .card h4.card-title {
+  text-transform: capitalize;
+}
+
+.just-main .userdetails .card .card-body {
+  background: #020024;
+  background: -webkit-gradient(linear, left top, right top, from(#020024), color-stop(35%, #090979), to(#00d4ff));
+  background: linear-gradient(90deg, #020024 0%, #090979 35%, #00d4ff 100%);
+}
+
+.just-main hr.my-4 {
+  border: solid rgba(158, 154, 154, 0.856) 2px;
+}
+
+.main-reports,
+.main-post,
+.main-user-messages {
+  padding: 20px;
+}
+
+.main-reports h5,
+.main-post h5,
+.main-user-messages h5 {
+  font-size: 15px;
+  color: #fff;
+}
+
+.main-reports img,
+.main-post img,
+.main-user-messages img {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+}
+
+.main-reports a,
+.main-post a,
+.main-user-messages a {
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.main-reports li,
+.main-post li,
+.main-user-messages li {
+  -webkit-transition: 0.5s ease-in;
+  transition: 0.5s ease-in;
+}
+
+.main-reports li:hover,
+.main-post li:hover,
+.main-user-messages li:hover {
+  background: #eedd82;
+  color: #fff;
+}
+
+.dashboard {
+  padding: 20px;
+  font-weight: bold;
+  color: #fff;
+}
+
+span.users-online {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+span.users-online .online-user {
+  padding: 10px;
+}
+
+span.users-online .online-user img {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  -webkit-animation: glow ease 1.5s  infinite;
+          animation: glow ease 1.5s  infinite;
+}
+
+@-webkit-keyframes glow {
+  0% {
+    border: solid #00FF00 2px;
+  }
+  50% {
+    border: solid #228B22 2px;
+  }
+  100% {
+    border: solid green 2px;
+  }
+}
+
+@keyframes glow {
+  0% {
+    border: solid #00FF00 2px;
+  }
+  50% {
+    border: solid #228B22 2px;
+  }
+  100% {
+    border: solid green 2px;
+  }
+}
+/*# sourceMappingURL=main.css.map */

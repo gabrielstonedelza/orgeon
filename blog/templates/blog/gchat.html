@@ -1,0 +1,56 @@
+{% extends "blog/base2.html" %}
+{% load crispy_forms_tags%}
+{% block content %}
+<div class="container-fluid h-100">
+    <div class="row justify-content-center h-100">
+        <div class="col-md-4 col-xl-3 chat">
+            <div class="card mb-sm-3 mb-md-0 contacts_card">
+                <div class="card-body contacts_body">
+                    <ui class="contacts">
+                        {% for user in on_users %}
+                            <li>
+                                <div class="d-flex bd-highlight">
+                                    <div class="img_cont">
+                                        <img src="{{ user.user.profile.profile_pic.url }}" class="rounded-circle user_img">
+                                        <span class="online_icon"></span>
+                                    </div>
+                                    <div class="user_info">
+                                        <span>{{ user.user.username }}</span>
+                                        <p>Online</p>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ui>
+                </div>
+                <div class="card-footer"></div>
+            </div>
+        </div>
+        <div class="col-md-8 col-xl-6 chat">
+            <div class="card">
+                <div class="card-header msg_head">
+                    <div class="d-flex bd-highlight">
+                        <div class="img_cont">
+                            <img src="{{ user.profile.profile_pic.url }}" class="rounded-circle user_img">
+                            <span class="online_icon"></span>
+                        </div>
+                        <div class="user_info">
+                            <span>{{ request.user.username }}</span><br>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="group-message-display ">
+                    {% include "blog/groupchat.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    setInterval(function () {
+        location.reload();
+    }, 40000);
+
+</script>
+{% endblock %}
