@@ -2,7 +2,8 @@ $(function() {
   setTimeout(function() {
     $(".alert").slideUp(3000);
   }, 5000);
- 
+
+
   $(document).on("submit", ".post-comment-form", function(event) {
     event.preventDefault();
     $.ajax({
