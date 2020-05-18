@@ -1,23 +1,24 @@
-{% extends "blog/base.html" %} 
+{% extends "blog/base2.html" %} 
 {% block content %}
 <div class="container mt-3">
   <br />
-  <span style="position: fixed; ">
+  <span style="position: fixed;">
     <a title="Become a volunteer" href="{% url 'volunteer_join' %}">
         <i class="fas fa-plus-circle fa-3x"></i>
     </a>
   </span><h3 class="text-center mb-3">Our Volunteers</h3>
   <br />
   <div class="row mb-3">
-    {% for v in volunteers %}
+    {% for v in ourvolunteers %}
     <div class="col-xs-6 col-sm-6 col-md-3 mb-3">
       <!-- Card Dark -->
-      <div class="card myvolunteer-container">
+      <div class="card myvolunteer-container" style="width: 300px;height: 400px;">
         <!-- Card image -->
         <div class="view overlay">
             {% if v.photo %}
           <img
-            class="card-img-top"
+            style="width: 300px;height: 300px;"
+            class="card-img-top "
             src="{{ v.photo.url }}"
             alt="Card image cap"
           />

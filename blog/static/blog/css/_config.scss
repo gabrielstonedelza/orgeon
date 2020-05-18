@@ -40,6 +40,7 @@ a.delete{
 }
 
 #delete{
+    border: none;
     color: $light;
     font-weight: bold;
     padding-left: 7px;
@@ -90,6 +91,23 @@ background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(
 }
 
 .butt{
+    color: $light;
+    font-weight: bold;
+    padding-left: 7px;
+    padding-right: 7px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background: rgb(2,0,36);
+background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+    border-radius: 5px;
+    transition: 0.5s ease-in;
+    &:hover{
+        background: #ffec8b;
+        color: #000;
+    }
+}
+button.butt{
+    border: none;
     color: $light;
     font-weight: bold;
     padding-left: 7px;
