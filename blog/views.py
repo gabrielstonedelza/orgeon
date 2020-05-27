@@ -33,7 +33,7 @@ from django.contrib.auth import authenticate, login
 import time
 from summerschool.models import  School
 from users.models import Profile, MyProfileUser
-from summerschool.models import School,Student
+from summerschool.models import School,Student,SchoolKid
 
 # global time checker
 CAN_STAY_LOGGED_IN1 = 30
@@ -552,7 +552,6 @@ def main(request):
         if this_min == CAN_STAY_LOGGED_IN1 or this_min == CAN_STAY_LOGGED_IN2 or this_min == CAN_STAY_LOGGED_IN3 or this_min == CAN_STAY_LOGGED_IN4:
             return redirect('logout')
     else:
-        # messages.info(request, f"You were logged out")
         return redirect('login')
     context = {
         'users': on_line_users,
@@ -560,7 +559,6 @@ def main(request):
         'reports': reports,
         'posts': posts,
         'current_events': current_events,
-        # "last_message": last_message
     }
 
     return render(request, "blog/main.html", context)
@@ -585,17 +583,15 @@ class EventDetailView(LoginRequiredMixin, DetailView):
 def user_activities(request):
     if LoginCode.objects.filter(user=request.user).exists():
         users = Profile.objects.filter(verified=True).count()
-        students = Student.objects.all().count()
-        grade_school_students = School.objects.filter(school="GradeSchool")
-        pre_school_students = School.objects.filter(school="PreSchool")
-        kindergarten_students = School.objects.filter(school="Kindergarten")
+        students = SchoolKid.objects.all()
+        grade_school_students = SchoolKid.objects.filter(school="GradeSchool")
+        pre_school_students = SchoolKid.objects.filter(school="PreSchool")
+        kindergarten_students = SchoolKid.objects.filter(school="Kindergarten")
         volunteers = Volunteer.objects.all().count()
         partners = Partnership.objects.all().count()
         subscribers = NewsLetter.objects.all().count()
         myclients = ClientInfoProgress.objects.all().count()
-        for i in grade_school_students:
-            print(i.user.email)
-        
+ 
 
         this_time = datetime.now()
         this_min = this_time.minute
@@ -617,8 +613,6 @@ def user_activities(request):
         "kindergarten_students": kindergarten_students,
     }
 
-    if request.is_ajax():
-        return HttpResponse(context)
 
     return render(request, "blog/activities.html", context)
 

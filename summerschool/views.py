@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import School, Student, SchoolLoginCode
-from django.views.generic import ListView, CreateView, DetailView, UpdateView
-from .forms import (KidsSchoolRegister, KidsSchoolUpdateForm, KidsSchoolProfileUpdate, )
+from .models import School, Student, SchoolLoginCode, SchoolKid
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from .forms import (KidsSchoolRegister, KidsSchoolUpdateForm, KidsSchoolProfileUpdate,SchoolKidProfileForm)
 from email.message import EmailMessage
 from django.conf import settings
 import smtplib
@@ -20,11 +20,11 @@ def summerhome(request):
 
 def register_school(request):
     msg = EmailMessage()
+    msg1 = EmailMessage()
     if request.method == "POST":
         form = KidsSchoolRegister(request.POST)
         if form.is_valid():
             kids_email = form.cleaned_data.get('email')
-            kids_school = form.cleaned_data.get('school')
 
             if User.objects.filter(email=kids_email).exists():
                 messages.info(request, f"Sorry,a user with the same email already exists")
@@ -54,10 +54,10 @@ def register_school(request):
                     messages.success(request, f"Thank you for joining our summer tutoring program.")
                     return redirect('school_login')
                 # to organization email
-                msg["Subject"] = "A new Kid just joined the gradeschool summer tutoring program"
-                msg["From"] = settings.EMAIL_HOST_USER
-                msg["To"] = settings.EMAIL_HOST_USER
-                msg.set_content(
+                msg1["Subject"] = "A new Kid just joined the gradeschool summer tutoring program"
+                msg1["From"] = settings.EMAIL_HOST_USER
+                msg1["To"] = settings.EMAIL_HOST_USER
+                msg1.set_content(
                     "Got a new kid for the summer tutoring program.")
                 hml = f"""
                     <!Doctype html>
@@ -70,10 +70,10 @@ def register_school(request):
                     </html>
                     </html>
                     """
-                msg.add_alternative(hml, subtype='html')
+                msg1.add_alternative(hml, subtype='html')
                 with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
                     smtp.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
-                    smtp.send_message(msg)
+                    smtp.send_message(msg1)
         else:
             messages.info(request, f"Something went wrong")
     else:
@@ -92,7 +92,7 @@ def kids_profile_school(request):
         if user:
             user.verified = True
             user.save()
-    
+
         if request.method == "POST":
             ug_form = KidsSchoolUpdateForm(request.POST, instance=request.user)
             ugp_form = KidsSchoolProfileUpdate(request.POST, request.FILES, instance=request.user.school)
@@ -151,33 +151,10 @@ def school_login_request(request):
 
 @login_required
 def schoolhome(request):
-    try:
-        user = request.user
-        can_attend_class = False
-        is_in_gradeschool = False
-        is_in_preschool = False
-        is_in_kindergarten = False
-
-        if School.objects.filter(user=user).exists():
-            can_attend_class = True
-        school_kid = School.objects.get(user=user)
-
-        if school_kid.school == "GradeSchool":
-            is_in_gradeschool = True
-        elif school_kid.school == "PreSchool":
-            is_in_preschool = True
-
-        elif school_kid.school == "Kindergarten":
-            is_in_kindergarten = True
-            
-    except Exception as error:
-        messages.info(request, "Sorry you are not in our school list")
+    user_kids = SchoolKid.objects.filter(user=request.user).order_by('-date_registered')
 
     context = {
-        "can_attend_class": can_attend_class,
-        "is_in_gradeschool": is_in_gradeschool,
-        "is_in_preschool": is_in_preschool,
-        "is_in_kindergarten": is_in_kindergarten
+      "user_kids": user_kids
     }
 
     return render(request, 'summerschool/school_home.html', context)
@@ -186,3 +163,46 @@ def schoolhome(request):
 @login_required
 def school_logout(request):
     return render(request, "summerschool/logout.html")
+
+
+class SchoolKidProfileCreateView(LoginRequiredMixin, CreateView):
+    model = SchoolKid
+    fields = ['child_name', 'age', 'school', 'grade', 'photo']
+    success_url = '/schoolhome'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+class SchoolKidProfileDetailView(LoginRequiredMixin, DetailView):
+    model = SchoolKid
+
+
+class SchoolKidProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = SchoolKid
+    fields = ['child_name', 'age', 'school', 'grade', 'photo']
+    success_url = '/schoolhome'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        kid = self.get_object()
+        if self.request.user == kid.user:
+            return True
+        else:
+            return False
+
+
+class SchoolKidProfileDeleteView(LoginRequiredMixin,UserPassesTestMixin,DeleteView):
+    model = SchoolKid
+    success_url = '/schoolhome'
+
+    def test_func(self):
+        kid = self.get_object()
+        if self.request.user == kid.user:
+            return True
+        else:
+            return False

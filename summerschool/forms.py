@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import School
+from .models import School, SchoolKid
 
 
 class KidsSchoolRegister(UserCreationForm):
@@ -23,5 +23,11 @@ class KidsSchoolUpdateForm(forms.ModelForm):
 class KidsSchoolProfileUpdate(forms.ModelForm):
     class Meta:
         model = School
-        fields = ['school', 'grade', 'age', 'fullname', 'photo', 'name_of_parent_or_guardian', 'contact_number']
+        fields = ['fullname', 'photo', 'contact_number']
 
+
+class SchoolKidProfileForm(forms.ModelForm):
+
+    class Meta:
+        model = SchoolKid
+        fields = ['child_name', 'age', 'school', 'grade', 'photo']

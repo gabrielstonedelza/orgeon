@@ -5,8 +5,32 @@
 
 .login-form-container button {
   border: none;
+  background-color: transparent;
   padding: 10px;
-  border-radius: 15px;
+  font-weight: bold;
+  font-size: 20px;
+  border: solid 2px silver;
+  border-radius: 10px;
+}
+
+.login-form-container button span.l {
+  color: rgba(21, 181, 250, 0.904);
+}
+
+.login-form-container button span.o {
+  color: #ffc625;
+}
+
+.login-form-container button span.g {
+  color: #f0479c;
+}
+
+.login-form-container button span.i {
+  color: #b9e73e;
+}
+
+.login-form-container button span.n {
+  color: #29e7ff;
 }
 
 .login-form-container legend {
@@ -124,20 +148,23 @@
 }
 
 .donate-buttons form input {
-  border: none;
-  border-radius: 15px;
-  padding: 5px;
-  font-size: 15px;
-  color: black;
+  color: #fff;
   font-weight: bold;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background: #020024;
+  background: -webkit-gradient(linear, left top, right top, from(#020024), color-stop(35%, #090979), to(#00d4ff));
+  background: linear-gradient(90deg, #020024 0%, #090979 35%, #00d4ff 100%);
+  border-radius: 5px;
+  -webkit-transition: 0.5s ease-in;
+  transition: 0.5s ease-in;
 }
 
 .donate-buttons form input:hover {
-  background-color: rgba(255, 255, 255, 0.288);
-  color: white;
-  border-radius: 10px;
-  -webkit-transition: 1s ease;
-  transition: 1s ease;
+  background: #ffec8b;
+  color: #000;
 }
 
 #bt {
@@ -155,5 +182,42 @@
   border-radius: 10px;
   -webkit-transition: 1s ease;
   transition: 1s ease;
+}
+
+a.delete {
+  color: #fff;
+  font-weight: bold;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background: red;
+  border-radius: 5px;
+  -webkit-transition: 0.5s ease-in;
+  transition: 0.5s ease-in;
+}
+
+a.delete:hover {
+  background: #ff02029a;
+  color: #fff;
+}
+
+#delete {
+  border: none;
+  color: #fff;
+  font-weight: bold;
+  padding-left: 7px;
+  padding-right: 7px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background: red;
+  border-radius: 5px;
+  -webkit-transition: 0.5s ease-in;
+  transition: 0.5s ease-in;
+}
+
+#delete:hover {
+  background: #ff02029a;
+  color: #fff;
 }
 /*# sourceMappingURL=summerschool_login.css.map */
