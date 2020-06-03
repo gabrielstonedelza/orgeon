@@ -1036,6 +1036,11 @@ footer {
   transition: 1s ease;
 }
 
+.home-wrapper .home-showcase .home-contents .container .live-matter {
+  font-weight: bold;
+  font-style: italic;
+}
+
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
   .home-wrapper .home-showcase {
@@ -1560,5 +1565,13 @@ footer {
     -webkit-transition: 1s ease;
     transition: 1s ease;
   }
+}
+
+.text1 {
+  display: none;
+}
+
+.text2 {
+  display: none;
 }
 /*# sourceMappingURL=home.css.map */

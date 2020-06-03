@@ -680,6 +680,11 @@ footer {
             transition: 1s ease;
           }
         }
+        .live-matter{
+          font-weight: bold;
+          font-style: italic;
+          // color: black;
+        }
       }
     }
   }
@@ -1166,4 +1171,12 @@ footer {
       }
     }
   }
+}
+
+.text1{
+  display: none;
+}
+
+.text2{
+  display: none;
 }
