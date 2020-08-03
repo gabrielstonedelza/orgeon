@@ -1,9 +1,9 @@
 from django.urls import path
 
 from . import views
-from .views import Volunteers,VolunteerFormView,OurVolunteers
+from .views import Volunteers, VolunteerFormView, OurVolunteers
 from .views import (PostCreateView, PostListView, EventCreateView, EventDetailView, ReportListView,
-                    ClientInfoCreateView, ClientInfoListView, ClientInfoUpdateView, ClientInfoDeleteView)
+                    ClientInfoCreateView, ClientInfoListView, ClientInfoUpdateView, ClientInfoDeleteView, CreateReportView)
 urlpatterns = [
     path('', views.home, name='home'),
     path('gallery/', views.gallery, name='gallery'),
@@ -13,7 +13,7 @@ urlpatterns = [
     path('somevids/', views.some_videos, name='somevids'),
     path('volunteer/new/', VolunteerFormView.as_view(), name='volunteer_join'),
     path('volunteers/', Volunteers.as_view(), name='volunteers'),
-    path('ourvolunteers/',OurVolunteers.as_view(),name='ourvolunteers'),
+    path('ourvolunteers/', OurVolunteers.as_view(),name='ourvolunteers'),
     path('events/', views.events, name='events'),
     path('join-trip/new/', views.join_trip, name='jointrip'),
     path('partner/new/', views.become_partner, name='become_a_partner'),
@@ -21,7 +21,7 @@ urlpatterns = [
     path('donate/', views.donate, name='donate'),
     path('reports/', ReportListView.as_view(), name='reports'),
     path('report/<int:id>/', views.report_detail, name='report_detail'),
-    path('report/new/', views.create_report, name='create_report'),
+    path('report/new/', CreateReportView.as_view(), name='create_report'),
     path('employees/', views.employees, name='employees'),
     path('notification/new/', PostCreateView.as_view(), name='post_new'),
     path('posts/', PostListView.as_view(), name='posts'),
@@ -33,9 +33,11 @@ urlpatterns = [
     path('activities/', views.user_activities, name='activities'),
     path('login/', views.login_request, name='login'),
     path('logout/', views.logout, name='logout'),
-    path('direct/', views.all_users, name="allusers"),
-    path('direct/<str:username>/', views.user_detail, name="userdetail"),
-    path('chat/', views.group_chat, name="chat"),
+    path('allstudents/', views.our_summer_program, name="students"),
+    path('reviews/', views.reviews, name='reviews'),
+    path('reviews_plus/', views.create_reviews, name='review_create'),
+
+
     path("contact-us/", views.contact_us, name='contact'),
     path('clients/', ClientInfoListView.as_view(), name='clients'),
     path('clients/new/', ClientInfoCreateView.as_view(), name='clients_new'),

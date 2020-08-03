@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
 from .models import (Volunteer, Events, JoinTrip, Partnership, NewsLetter, Report, Post, Comments, NewsUpdate, Gallery,
-                     LoginCode, Online_user, MessageD, Message, ContactUs, ClientInfoProgress)
+                     LoginCode, ContactUs, ClientInfoProgress, NotifyMe, Reviews)
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
@@ -21,8 +21,8 @@ from .forms import (VolunteerForm,
                     PartnershipForm,
                     NewsLetterForm,
                     ReportForm,
-                    PostForm, CommentsForm,
-                    NewsUpdateForm, Message_Form, MessageD_Form, ContactForm, ClientProgressUpdateForm
+                    CommentsForm,
+                    NewsUpdateForm, ContactForm, ClientProgressUpdateForm, ReviewForm
                     )
 from django.contrib.auth.models import User
 import random
@@ -31,9 +31,9 @@ from django.utils import timezone
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
 import time
-from summerschool.models import  School
+from summerschool.models import School, UserSurvey
 from users.models import Profile, MyProfileUser
-from summerschool.models import School,Student,SchoolKid
+from summerschool.models import School, Student, SchoolKid
 
 # global time checker
 CAN_STAY_LOGGED_IN1 = 30
@@ -110,7 +110,7 @@ def home(request):
                 """
                 msg.add_alternative(hml, subtype='html')
                 with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-                    smtp.login(settings.EMAIL_HOST_USER,settings.EMAIL_HOST_PASSWORD)
+                    smtp.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
                     smtp.send_message(msg)
                     messages.success(request, f"Thank you,your email has been added to our newslist.")
                     return redirect('home')
@@ -254,7 +254,7 @@ def join_trip(request):
             """
             msg.add_alternative(hml, subtype='html')
             with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-                smtp.login(settings.EMAIL_HOST_USER,settings.EMAIL_HOST_PASSWORD)
+                smtp.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
                 smtp.send_message(msg)
             msg1["Subject"] = "Thank you."
             msg1["From"] = settings.EMAIL_HOST_USER
@@ -415,39 +415,37 @@ def report_detail(request, id):
     return render(request, "blog/report_detail.html", context)
 
 
-@login_required()
-def create_report(request):
-    if LoginCode.objects.filter(user=request.user).exists():
-        if request.method == "POST":
-            form = ReportForm(request.POST)
-            if form.is_valid():
-                title = form.cleaned_data.get('title')
-                report = form.cleaned_data.get('report')
-                Report.objects.create(
-                    user=request.user, title=title, report=report)
-                reporter = request.user
+class CreateReportView(LoginRequiredMixin, CreateView):
+    model = Report
+    fields = ['title', 'report', 'report_doc']
+    success_url = '/reports'
 
-                subject = f"New report from {reporter}"
-                message = f"Login to orgeon of stars in order to read message"
-                from_email = settings.EMAIL_HOST_USER
-                to_list = [settings.EMAIL_HOST_USER]
-                send_mail(subject, message, from_email,
-                          to_list, fail_silently=True)
-                messages.success(
-                    request, f"Report '{title}' successfullly created.")
-                return redirect('reports')
+    def form_valid(self, form):
+        msg = EmailMessage()
+        form.instance.user = self.request.user
 
-        else:
-            form = ReportForm()
-    else:
-        messages.info(request, f"You were logged out")
-        return redirect('login')
+        msg["Subject"] = "Got new report"
+        msg["From"] = settings.EMAIL_HOST_USER
+        msg["To"] = settings.EMAIL_HOST_USER
+        msg.set_content(
+            f"New report from {self.request.user}.")
+        hml = f"""
+                <!Doctype html>
+                <html>
+                <body>
+                <h1 style='font-style:italic;'>New Report.</h1>
+                <br>
+                <p style='color:SlateGray;'>New report from {self.request.user}.Login to see report</p>
+                </body>
+                </html>
+                </html>
+                """
+        msg.add_alternative(hml, subtype='html')
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+            smtp.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+            smtp.send_message(msg)
 
-    context = {
-        'form': form
-    }
-
-    return render(request, "blog/create_report.html", context)
+        return super().form_valid(form)
 
 
 @login_required()
@@ -470,11 +468,37 @@ def employees(request):
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['title', 'message', 'poster', 'need_replies']
+    fields = ['title', 'message', 'post_doc', 'image_file', 'need_replies']
     success_url = '/main'
 
     def form_valid(self, form):
+        msg = EmailMessage()
+        employees_email = []
+        employees = User.objects.exclude(id=self.request.user.id)
+        for i in employees:
+            employees_email.append(i.email)
+
         form.instance.author = self.request.user
+        msg["Subject"] = "Got new post Admin"
+        msg["From"] = settings.EMAIL_HOST_USER
+        msg["To"] = employees_email
+        msg.set_content(
+            f"New post from {self.request.user}.")
+        hml = f"""
+                <!Doctype html>
+                <html>
+                <body>
+                <h1 style='font-style:italic;'>New Post.</h1>
+                <br>
+                <p style='color:SlateGray;'>New post from {self.request.user}.Login to see post</p>
+                </body>
+                </html>
+                </html>
+                """
+        msg.add_alternative(hml, subtype='html')
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+            smtp.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+            smtp.send_message(msg)
         return super().form_valid(form)
 
 
@@ -535,14 +559,14 @@ def post_detail(request, id):
 @login_required()
 def main(request):
     if LoginCode.objects.filter(user=request.user).exists():
-        on_line_users = Online_user.objects.all()
         v_users = []
         users = User.objects.exclude(id=request.user.id)
         for i in users:
-            if i.profile.verified == True:
+            if i.profile.verified:
                 v_users.append(i)
         reports = Report.objects.all().order_by('-date_posted')[:6]
         posts = Post.objects.all().order_by('-date_posted')[:6]
+
         td = date.today()
         tt = timezone.now()
         ntt = tt.time
@@ -554,7 +578,6 @@ def main(request):
     else:
         return redirect('login')
     context = {
-        'users': on_line_users,
         "chat": v_users,
         'reports': reports,
         'posts': posts,
@@ -582,16 +605,21 @@ class EventDetailView(LoginRequiredMixin, DetailView):
 @login_required()
 def user_activities(request):
     if LoginCode.objects.filter(user=request.user).exists():
+        school_users = School.objects.all()
         users = Profile.objects.filter(verified=True).count()
         students = SchoolKid.objects.all()
-        grade_school_students = SchoolKid.objects.filter(school="GradeSchool")
-        pre_school_students = SchoolKid.objects.filter(school="PreSchool")
-        kindergarten_students = SchoolKid.objects.filter(school="Kindergarten")
+        grade_school = SchoolKid.objects.filter(school="GradeSchool")
+        pre_school = SchoolKid.objects.filter(school="PreSchool")
+        kindergarten = SchoolKid.objects.filter(school="Kindergarten")
         volunteers = Volunteer.objects.all().count()
         partners = Partnership.objects.all().count()
         subscribers = NewsLetter.objects.all().count()
         myclients = ClientInfoProgress.objects.all().count()
- 
+
+        useful = UserSurvey.objects.filter(usefulness__gt=5)
+        participate = UserSurvey.objects.filter(participate="yes")
+        recommend = UserSurvey.objects.filter(recommend="yes")
+        something_new = UserSurvey.objects.filter(something_new="yes")
 
         this_time = datetime.now()
         this_min = this_time.minute
@@ -608,13 +636,28 @@ def user_activities(request):
         "myclients": myclients,
         "subscribers": subscribers,
         "students": students,
-        "grade_school_students": grade_school_students,
-        "pre_school_students": pre_school_students,
-        "kindergarten_students": kindergarten_students,
+        "grade_school": grade_school,
+        "pre_school": pre_school,
+        "kindergarten": kindergarten,
+        "school_users": school_users,
+        "useful": useful,
+        "participate": participate,
+        "recommend": recommend,
+        "something_new": something_new,
     }
 
-
     return render(request, "blog/activities.html", context)
+
+
+@login_required
+def our_summer_program(request):
+    all_students = SchoolKid.objects.all().order_by('-date_registered')
+
+    context = {
+        "all_students": all_students
+    }
+
+    return render(request, "blog/all_students.html", context)
 
 
 def gallery(request):
@@ -638,9 +681,7 @@ def login_request(request):
                     return redirect('schoolhome')
                 if not LoginCode.objects.filter(user=user).exists():
                     LoginCode.objects.create(user=user)
-                if not Online_user.objects.filter(user=user).exists():
-                    Online_user.objects.create(user=user)
-                # messages.success(request, f"login success")
+
                 return redirect('main')
                 # Redirect to a success page.
             else:
@@ -661,12 +702,9 @@ def login_request(request):
 def logout(request):
     try:
         ul = LoginCode.objects.filter(user=request.user)
-        on_user = Online_user.objects.filter(user=request.user)
 
         if ul:
             ul.delete()
-        if on_user:
-            on_user.delete()
         del request.session['username']
     except:
         pass
@@ -683,104 +721,6 @@ def all_users(request):
     }
 
     return render(request, "blog/users-direct.html", context)
-
-
-@login_required
-def user_detail(request, username):
-    msg = EmailMessage()
-    deuser = get_object_or_404(User, username=username)
-    deuser_email = deuser.email
-    users = User.objects.exclude(id=request.user.id)
-    chatid = deuser.id * request.user.id
-    chat = Message.objects.filter(chat_id=chatid)
-    mychats = Message.objects.all().filter(chat_id=chatid).filter(sender=request.user).filter(receiver=deuser).order_by(
-        'message')
-
-    if request.method == "POST":
-        form = Message_Form(request.POST)
-        if form.is_valid():
-            message = form.cleaned_data.get('message')
-            if not Message.objects.filter(chat_id=chatid).exists():
-                Message.objects.create(chat_id=chatid, sender=request.user, receiver=deuser, message=message)
-            else:
-                Message.objects.create(chat_id=chatid, sender=request.user, receiver=deuser, message=message)
-            # mail to personal email
-
-            msg["Subject"] = f"Got new messages from {request.user}"
-            msg["From"] = settings.EMAIL_HOST_USER
-            msg["To"] = deuser_email
-            msg.set_content(f"{request.user} has sent a private message to you,login to view and reply.")
-            hml = f"""
-            <!Doctype html>
-            <html>
-            <body>
-            <h1 style='font-style:italic;'>Got new messages from {request.user}.</h1>
-            <p style='color:SlateGray;'>{request.user} has sent a private message to you,login to view and reply.</p>
-            </body>
-            </html>
-            </html>
-            """
-            msg.add_alternative(hml, subtype='html')
-            with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-                smtp.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
-                smtp.send_message(msg)
-    else:
-        form = Message_Form()
-
-    context = {
-        "form": form,
-        "deuser": deuser,
-        "chat": chat,
-        "users": users,
-        "mychats": mychats
-    }
-    if request.is_ajax():
-        msg = render_to_string("blog/umessages.html", context, request=request)
-        return JsonResponse({
-            "form": msg
-        })
-
-    return render(request, "blog/user_direct_detail.html", context)
-
-
-@login_required
-def group_chat(request):
-    if LoginCode.objects.filter(user=request.user).exists():
-        all_messages = MessageD.objects.all().order_by('date_sent')
-        users = User.objects.exclude(id=request.user.id)
-        on_users = Online_user.objects.all()
-        if request.method == "POST":
-            form = MessageD_Form(request.POST)
-            if form.is_valid():
-                sender = request.user
-                message = form.cleaned_data.get('message')
-                MessageD.objects.create(sender=sender, message=message)
-
-        else:
-            form = MessageD_Form()
-
-        this_time = datetime.now()
-        this_min = this_time.minute
-        if this_min == CAN_STAY_LOGGED_IN1 or this_min == CAN_STAY_LOGGED_IN2 or this_min == CAN_STAY_LOGGED_IN3 or this_min == CAN_STAY_LOGGED_IN4:
-            return redirect('logout')
-    else:
-        messages.info(request, f"You were logged out")
-        return redirect('login')
-
-    context = {
-        "form": form,
-        "users": users,
-        "all_messages": all_messages,
-        "on_users": on_users
-    }
-
-    if request.is_ajax():
-        msg_chat = render_to_string("blog/groupchat.html", context, request=request)
-        return JsonResponse({
-            "form": msg_chat,
-        })
-
-    return render(request, "blog/gchat.html", context)
 
 
 def contact_us(request):
@@ -887,3 +827,56 @@ class ClientInfoDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return True
         else:
             return False
+
+
+def reviews(request):
+
+    all_surveys = UserSurvey.objects.all().order_by('-date_answered')
+
+    # all reviews
+    all_reviews = Reviews.objects.all().order_by('-date_posted')
+
+    context = {
+
+        "all_reviews": all_reviews,
+        "all_surveys": all_surveys,
+    }
+
+    return render(request, "blog/reviews.html", context)
+
+
+def create_reviews(request):
+    msg = EmailMessage()
+    if request.method == "POST":
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            form.save()
+            msg["Subject"] = f"New review posted"
+            msg["From"] = settings.EMAIL_HOST_USER
+            msg["To"] = settings.EMAIL_HOST_USER
+            msg.set_content(f"Someone just wrote a review about Orgeon")
+            hml = f"""
+                <!Doctype html>
+                <html>
+                <body>
+                <h1 style='font-style:italic;'>New review posted.</h1>
+                <p style='color:SlateGray;'>Someone just wrote a review about Orgeon.Visit <a targer='_blank' href='https://www.orgeonofstars.org/reviews/'>Orgeonofstars</a> to see it.</p>
+                </body>
+                </html>
+                </html>
+                """
+            msg.add_alternative(hml, subtype='html')
+            with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+                smtp.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+                smtp.send_message(msg)
+                messages.success(request, f'Review Added.')
+                return redirect('reviews')
+
+    else:
+        form = ReviewForm()
+
+    context = {
+        "form": form
+    }
+
+    return render(request, "blog/review_form.html", context)

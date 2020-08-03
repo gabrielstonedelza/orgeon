@@ -174,4 +174,72 @@ $(function() {
       }
     }
   });
+
+  // summer school survey
+  var useful = document.querySelector("#useful").innerHTML;
+  var participate = document.querySelector("#participate").innerHTML;
+  var recommend = document.querySelector("#recommend").innerHTML;
+  var something_new = document.querySelector("#something_new").innerHTML;
+  // for the charts
+  var ctx = document.getElementById("myChart3");
+  Chart.defaults.global.defaultFontFamily = "Lato";
+  Chart.defaults.global.defaultFontSize = 15;
+  Chart.defaults.global.defaultFontColor = "#fff";
+  var myChart1 = new Chart(ctx, {
+//    type: "doughnut",
+    type: "doughnut",
+    data: {
+      labels: [
+        "Summer School Useful",
+        "Would Participate Again",
+        "Would Recommend a Friend",
+        "Kids learnt Something New",
+        // "Messaging",
+      ],
+      datasets: [
+        {
+          label: "#",
+          data: [useful, participate, recommend, something_new],
+          backgroundColor: [
+            "#3B8BEB",
+            "#B23850",
+            "#E7E3D4",
+            "#8590AA",
+
+          ],
+          borderColor: "#777",
+          borderWidth: 1,
+          hoverBorderWidth: 3,
+          hoverBorderColor: "#000"
+        }
+      ]
+    },
+    options: {
+      title: {
+        display: true,
+        text: "Summer School Survey Results",
+        fontSize: 20,
+        fontColor: "#fff"
+      },
+      legend: {
+        display: true,
+        position: "right",
+        labels: {
+          fontColor: "#fff"
+        }
+      },
+      tooltips: {
+        // enable:false
+      },
+      scales: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true
+            }
+          }
+        ]
+      }
+    }
+  });
 });

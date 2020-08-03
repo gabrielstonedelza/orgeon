@@ -76,9 +76,49 @@ class SchoolKid(models.Model):
             img.save(self.photo.path)
 
 
-class SchoolLoginCode(models.Model):
+USEFUL_SUMMER_SCHOOL = (
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+    (6, 6),
+    (7, 7),
+    (8, 8),
+    (9, 9),
+    (10, 10),
+)
+PARTICIPATE_CHOICES = (
+    ("yes", "yes"),
+    ("no", "no"),
+)
+FRIEND_RECOMMENDATION_CHOICES = (
+    ("yes", "yes"),
+    ("no", "no"),
+)
+NEW_CHOICES = (
+    ("yes", "yes"),
+    ("no", "no")
+)
+RATING_CHOICES = (
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+)
+
+
+class UserSurvey(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date_logged = models.DateTimeField(auto_now_add=True)
+    usefulness = models.IntegerField(choices=USEFUL_SUMMER_SCHOOL, help_text="On a scale of 1 to 10 how useful was the summerschool?", default=10)
+    participate = models.CharField(max_length=4, choices=PARTICIPATE_CHOICES, help_text="Would you participate again if organized next time?", default="yes")
+    recommend = models.CharField(max_length=4, choices=FRIEND_RECOMMENDATION_CHOICES, help_text="Would you recommend a friend next time?", default="yes")
+    something_new = models.CharField(max_length=4, choices=NEW_CHOICES, help_text="Did your ward learn anything new?", default="yes")
+    ratings = models.IntegerField(default=5, help_text="How would you rate our summer school?")
+    improvement = models.TextField(blank=True, help_text="Is there something that needs improvement in our summer school?.Give us suggestions", default="", max_length=200)
+
+    date_answered = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.username} logged in at {self.date_logged}"
+        return f"Survey saved"

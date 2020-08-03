@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from .models import (Volunteer, JoinTrip, Partnership, NewsLetter,
-                     Report, Post, Comments, Comments, NewsUpdate, MessageD, Message, ContactUs, ClientInfoProgress
+                     Report, Post, Comments, NewsUpdate, ContactUs, ClientInfoProgress, Reviews
                      )
 
 
@@ -14,7 +14,7 @@ class NewsUpdateForm(forms.ModelForm):
 class VolunteerForm(forms.ModelForm):
     class Meta:
         model = Volunteer
-        fields = ['name', 'email', 'profession','country','photo', 'phone', 'why_join_Orgeon','additional_message']
+        fields = ['name', 'email', 'profession', 'country', 'photo', 'phone', 'why_join_Orgeon', 'additional_message']
 
 
 class JoinTripForm(forms.ModelForm):
@@ -41,18 +41,12 @@ class NewsLetterForm(forms.ModelForm):
 class ReportForm(forms.ModelForm):
     title = forms.CharField(label='', max_length=100, widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'Report Title'}))
-    report = forms.CharField(widget=forms.Textarea(
+    report = forms.CharField(label='', widget=forms.Textarea(
         attrs={'placeholder': 'Report....', 'rows': '2', 'cols': '35', 'id': 'reportform', 'name': 'reportform'}))
 
     class Meta:
         model = Report
-        fields = ['title', 'report']
-
-
-class PostForm(forms.ModelForm):
-    class Meta:
-        model = Post
-        fields = ['title', 'message', 'poster']
+        fields = ['title', 'report', 'report_doc']
 
 
 class CommentsForm(forms.ModelForm):
@@ -73,26 +67,6 @@ class LoginForm(forms.Form):
     # class Meta:
     #     model = User
     #     fields = ['username','password']
-
-
-class MessageD_Form(forms.ModelForm):
-    message = forms.CharField(label="", widget=forms.Textarea(
-        attrs={'placeholder': 'Message....', 'rows': '3', 'cols': '35', 'id': 'directmessage',
-               'name': 'directmessage'}))
-
-    class Meta:
-        model = MessageD
-        fields = ['message']
-
-
-class Message_Form(forms.ModelForm):
-    message = forms.CharField(label="", widget=forms.Textarea(
-        attrs={'placeholder': 'Message....', 'rows': '3', 'cols': '35', 'id': 'directmessage',
-               'name': 'directmessage'}))
-
-    class Meta:
-        model = Message
-        fields = ['message']
 
 
 class ContactForm(forms.ModelForm):
@@ -130,3 +104,10 @@ class ClientProgressUpdateForm(forms.ModelForm):
     class Meta:
         model = ClientInfoProgress
         fields = ['name', 'email', 'phone', 'emergency_phone', 'next_of_kin', 'issue', 'progress']
+
+
+class ReviewForm(forms.ModelForm):
+
+    class Meta:
+        model = Reviews
+        fields = ['review_content', 'ratings']

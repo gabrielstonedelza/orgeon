@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import School, Student, SchoolLoginCode, SchoolKid
+from .models import School, Student,  SchoolKid, UserSurvey
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from .forms import (KidsSchoolRegister, KidsSchoolUpdateForm, KidsSchoolProfileUpdate,SchoolKidProfileForm)
 from email.message import EmailMessage
@@ -206,3 +206,18 @@ class SchoolKidProfileDeleteView(LoginRequiredMixin,UserPassesTestMixin,DeleteVi
             return True
         else:
             return False
+
+
+class UserSurveyCreateview(CreateView):
+    model = UserSurvey
+    fields = ['usefulness', 'participate', 'recommend', 'something_new', 'ratings', 'improvement']
+    success_url = '/donate_and_support'
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
+def donate_and_support(request):
+
+    return render(request, "summerschool/donate_and_suport.html")

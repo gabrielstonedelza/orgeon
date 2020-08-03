@@ -1574,4 +1574,8 @@ footer {
 .text2 {
   display: none;
 }
+
+form textarea {
+  resize: none;
+}
 /*# sourceMappingURL=home.css.map */

@@ -11,13 +11,18 @@ $dark:#d3d3d3;
 body {
   width: 100%;
   height: 100%;
-  background: linear-gradient(to right, rgba(#272727, 0.9), rgba(#272727, 0.3)),
-    url("../images/altitude-clouds-cold-daylight-417173.jpg");
+  background-color: #77a6f7f6;
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
   color: white;
   font-weight: bold;
+}
+
+form{
+  small#hint_id_usefulness,#hint_id_participate,#hint_id_recommend,#hint_id_something_new{
+    color: #fff !important;
+  }
 }
 
 

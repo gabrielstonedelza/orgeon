@@ -200,12 +200,14 @@ COUNTRY_OF_CHOICE = (
     ("Other", "Other")
 )
 
-
 CAREPLAN_CHOICE = (
-    ("Eagle","Eagle"),
-    ("Kangaroo","Kangaroo"),
-    ("Nested","Nested"),
+    ("Eagle", "Eagle"),
+    ("Kangaroo", "Kangaroo"),
+    ("Nested", "Nested"),
 )
+
+supported_files = ["docx", "doc", "pdf", "txt", "odt", "rtf", "tex", "wpd", "ods ", "xls", "xlsm", "xlsx", "pptx",
+                   "ppt", "pps", "odp"]
 
 
 class Volunteer(models.Model):
@@ -284,6 +286,8 @@ class Report(models.Model):
     title = models.CharField(max_length=100)
     report = models.TextField()
     has_read = models.ManyToManyField(User, related_name="has_read_report", blank=True)
+    report_doc = models.FileField(upload_to="report_documents", blank=True, help_text=f"Allowed {supported_files}",
+                                  validators=[FileExtensionValidator(allowed_extensions=supported_files)])
     date_posted = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -297,9 +301,9 @@ class Post(models.Model):
     author = author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_user')
     title = models.CharField(max_length=200)
     message = models.TextField(help_text="This message would be sent to all employees")
-    poster = models.ImageField(upload_to="post_posters", blank=True,
-                               validators=[FileExtensionValidator(allowed_extensions=['jpeg', 'jpg'])],
-                               help_text="Leave this field blank if message has no image.")
+    image_file = models.ImageField(upload_to="post_posters", blank=True, validators=[FileExtensionValidator(allowed_extensions=["jpg", "jpeg", "png", "gif"])])
+    post_doc = models.FileField(upload_to="post_documents", blank=True, help_text=f"Allowed {supported_files}",
+                                validators=[FileExtensionValidator(allowed_extensions=supported_files)])
     views = models.IntegerField(default=0)
     has_read = models.ManyToManyField(User, related_name="has_read_post", blank=True)
     need_replies = models.BooleanField(default=False)
@@ -310,16 +314,6 @@ class Post(models.Model):
 
     def get_absolute_post_url(self):
         return reverse("post_detail", args={self.pk})
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
-        img = Image.open(self.poster.path)
-
-        if img.height > 300 or img.width > 300:
-            output_size = (300, 300)
-            img.thumbnail = (output_size)
-            img.save(self.poster.path)
 
 
 class Comments(models.Model):
@@ -349,36 +343,6 @@ class LoginCode(models.Model):
         return f"{self.user.username} logged in at {self.date_logged}"
 
 
-class Online_user(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date_logged_in = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        return f"{self.user.username} just came online"
-
-
-class Message(models.Model):
-    chat_id = models.IntegerField(default=1)
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='message_sender')
-    receiver = models.ForeignKey(User, on_delete=models.CASCADE)
-    message = models.TextField()
-    read = models.BooleanField(default=False)
-    date_sent = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.sender.username} sent a message to {self.receiver.username}"
-
-
-class MessageD(models.Model):
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='group_message_sender')
-    message = models.TextField()
-    read = models.BooleanField(default=False)
-    date_sent = models.DateTimeField(default=timezone.now)
-
-    def __str__(self):
-        return f"{self.sender.username} sent a message"
-
-
 class ContactUs(models.Model):
     name = models.CharField(max_length=50)
     email = models.EmailField()
@@ -391,10 +355,11 @@ class ContactUs(models.Model):
 
 
 class ClientInfoProgress(models.Model):
-    care_plan = models.CharField(max_length=20,choices=CAREPLAN_CHOICE,default="Eagle",help_text="Choose a plan for client")
+    care_plan = models.CharField(max_length=20, choices=CAREPLAN_CHOICE, default="Eagle",
+                                 help_text="Choose a plan for client")
     assessment_officer = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=60)
-    age = models.IntegerField(default=10,blank=True)
+    age = models.IntegerField(default=10, blank=True)
     email = models.EmailField(unique=True, max_length=255, blank=True,
                               help_text="Leave blank if client doesn't have any.")
     phone = models.CharField(max_length=20)
@@ -422,3 +387,47 @@ class ClientInfoProgress(models.Model):
 
     def get_absolut_client_url(self):
         return reverse("client_detail", args={self.pk})
+
+
+class NotifyMe(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    notify_title = models.CharField(max_length=100, default="New Notification")
+    notify_alert = models.CharField(max_length=200)
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="who_started_following")
+    read = models.BooleanField(default=False)
+    date_notified = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"New {self.notify_title} to {self.user.username}"
+
+    def get_absolute_notification_url(self):
+        return reverse("notify_detail", args=self.pk)
+
+
+RATING_CHOICES = (
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+    (5, 5),
+)
+
+
+class Reviews(models.Model):
+    review_content = models.TextField(max_length=400)
+    reviewer = models.ImageField(upload_to="reviews_pics", blank=True, default="reviewer.jpg")
+    ratings = models.IntegerField(choices=RATING_CHOICES, default=5)
+    date_posted = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"New review posted"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        img = Image.open(self.reviewer.path)
+
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail = output_size
+            img.save(self.reviewer.path)

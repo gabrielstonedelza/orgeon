@@ -4,21 +4,25 @@
 <div class="container mt-3" id="postdetail">
     <section class="my-5">
         <div class="row">
-            <div class="col-lg-5 admin-posts">
-                {% if post.poster %}
-                <div class="view overlay rounded z-depth-2 mb-lg-0 mb-4 post-poster">
-                    <a title="click to enlarge image" href="{{ post.poster.url }}" data-lightbox='gallery'>
-                        <img class="img-fluid" src="{{ post.poster.url }}" alt="Sample image">
-                    </a>
-                </div>
-                {% endif %}
-            </div>
             <div class="col-lg-6 admin-post-details">
                 <h3 class="font-weight-bold mb-3"><strong>{{ post.title }}</strong></h3>
-                <p class="pst-msg">{{ post.message }}</p>
-                <p><span class="mr-1" style="color: white;">from</span> <span class="from-admin">
+                <p class="pst-msg">
+                    {{ post.message }}
+                    <br>
+                    <div>
+                {% if post.post_doc %}
+                    <a title="download attached file" href="{{ post.post_doc.url }}" class="butt" download="{{post.title}}" target="_blank">
+                        <i class="fas fa-download ml -3"></i> attached file
+                     </a>
+                {% endif %}
+                </p>
+            </div>
+                <p>
+                    <span class="mr-1" style="color: white;">from</span> <span class="from-admin">
                         <img src="{{ post.author.profile.profile_pic.url }}" alt="">
                     </span>,<span style="color: white;"> {{ post.date_posted|date:"D d M Y"}}</span></p>
+                <br>
+
             </div>
         </div>
     </section>

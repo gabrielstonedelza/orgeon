@@ -20,6 +20,11 @@
                     {% endif %}
                     <br>
                     <p>{{ report.report|safe }}</p>
+                    {% if report.report_doc %}
+                     <a title="download attached file" href="{{ report.report_doc.url }}" class="butt" download="{{report.title}}" target="_blank">
+                         <i class="fas fa-download ml -3"></i> attached file
+                     </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
