@@ -11,14 +11,69 @@
     }
 }
 
-
-.myvolunteer-container{
-    width: 250px;
-    height: 450px;
-    img{
-        width: 250px;
-        height: 250px;
+.volun-box{
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(400px, 1fr));
+  gap: 15px;
+  padding: 20px;
+  border: solid 1px grey;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.692);
+  color: #fff;
+  .v-box1{
+    display: flex;
+    .volunteer-pic{
+      img{
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+      }
     }
+    .volunteer-info{
+      small{
+        font-weight: bold;
+      }
+    }
+  }
+}
+.mysurveyers{
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(300px, 1fr));
+  gap: 15px;
+  padding: 20px;
+  border: solid 1px grey;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.692);
+  color: #fff;
+    .surveyer-image-ratings{
+      display: flex;
+      img{
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+      }
+    }
+}
+
+.myreviews{
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(400px, 1fr));
+  gap: 15px;
+  padding: 20px;
+  border: solid 1px grey;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.692);
+  color: #fff;
+  .img-rating{
+    display: flex;
+    .myimage{
+      img{
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+      }
+    }
+  }
 }
 
 .myemployees-container{
@@ -63,5 +118,10 @@
         width: 40px;
         height: 40px;
       }
+    }
+  }
+  form{
+    small#hint_id_message,#hint_id_post_doc{
+      color: #fff !important;
     }
   }

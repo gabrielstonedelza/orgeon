@@ -6,8 +6,10 @@
     {% for employee in employees %}
         <div class="employee-bg1" >
             <img src="{{ employee.profile_pic.url }}" alt="">
-            <h2>{{ employee.fullname }}</h2>
+            <h3>{{ employee.fullname }}</h3>
             <p>{{ employee.position }}</p>
+            <p>{{ employee.bio }}</p>
+            
         </div>
     {% endfor %}
 </div>

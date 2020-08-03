@@ -150,14 +150,83 @@ body {
   display: none;
 }
 
-.myvolunteer-container {
-  width: 250px;
-  height: 450px;
+.volun-box {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: (minmax(400px, 1fr))[auto-fit];
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 15px;
+  padding: 20px;
+  border: solid 1px grey;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.692);
+  color: #fff;
 }
 
-.myvolunteer-container img {
-  width: 250px;
-  height: 250px;
+.volun-box .v-box1 {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.volun-box .v-box1 .volunteer-pic img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.volun-box .v-box1 .volunteer-info small {
+  font-weight: bold;
+}
+
+.mysurveyers {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: (minmax(300px, 1fr))[auto-fit];
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 15px;
+  padding: 20px;
+  border: solid 1px grey;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.692);
+  color: #fff;
+}
+
+.mysurveyers .surveyer-image-ratings {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.mysurveyers .surveyer-image-ratings img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.myreviews {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: (minmax(400px, 1fr))[auto-fit];
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 15px;
+  padding: 20px;
+  border: solid 1px grey;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.692);
+  color: #fff;
+}
+
+.myreviews .img-rating {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.myreviews .img-rating .myimage img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
 }
 
 .myemployees-container {
@@ -219,5 +288,9 @@ body {
 .bg2 a img {
   width: 40px;
   height: 40px;
+}
+
+form small#hint_id_message, form #hint_id_post_doc {
+  color: #fff !important;
 }
 /*# sourceMappingURL=forms.css.map */

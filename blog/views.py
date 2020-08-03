@@ -512,8 +512,11 @@ class PostListView(LoginRequiredMixin, ListView):
 @login_required()
 def post_detail(request, id):
     if LoginCode.objects.filter(user=request.user).exists():
+        msg = EmailMessage()
         hasRead = False
         post = get_object_or_404(Post, id=id)
+        user = get_object_or_404(User,username=post.author)
+        
 
         if post:
             post.views += 1
@@ -530,6 +533,25 @@ def post_detail(request, id):
                 comment_content = request.POST.get('reply')
                 comment = Comments.objects.create(post=post, user=request.user, reply=comment_content)
                 comment.save()
+                msg["Subject"] = f"{request.user} replied a post of yours"
+                msg["From"] = settings.EMAIL_HOST_USER
+                msg["To"] = user.email
+                msg.set_content(f"{request.user} replied your post {post}")
+                hml = f"""
+                        <!Doctype html>
+                        <html>
+                        <body>
+                        <h1 style='font-style:italic;'>{request.user} replied a post of yours.</h1>
+                        <br>
+                        <p style='color:SlateGray;'>{request.user} replied your post {post}</p>
+                        </body>
+                        </html>
+                        </html>
+                        """
+                msg.add_alternative(hml, subtype='html')
+                with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+                    smtp.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+                    smtp.send_message(msg)
 
         this_time = datetime.now()
         this_min = this_time.minute

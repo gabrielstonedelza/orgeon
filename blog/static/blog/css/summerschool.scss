@@ -20,11 +20,15 @@ body {
 }
 
 form{
-  small#hint_id_usefulness,#hint_id_participate,#hint_id_recommend,#hint_id_something_new{
+  small#hint_id_usefulness,#hint_id_participate,#hint_id_recommend,#hint_id_something_new,#hint_id_report_doc,#hint_id_ratings,#hint_id_improvement{
     color: #fff !important;
   }
+  .form-text{
+    .text-muted{
+      color: #fff !important;
+    }
+  }
 }
-
 
 .mynav-wrapper {
   .myshowcase {

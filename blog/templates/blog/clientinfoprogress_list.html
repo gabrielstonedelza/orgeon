@@ -8,24 +8,17 @@
     <br>
     <div class="row mb-3">
         {% for client in clients %}
-        <div class="col-xs-6 col-sm-6 col-md-4 mb-3 client-master">
-<div class="card">
-    <div class="view overlay">
+        <div class="mb-3 ml-3 client-master">
+<div class="myclient-all">
         <div class="client-image">
             {% if client.client_image %}
-          <img class="card-img-top" src="{{ client.client_image.url }}"
-            alt="Card image cap">
+          <img class="z-depth-1-half" src="{{ client.client_image.url }}"
+            alt="client picture">
             {% endif %}
         </div>
-      <a>
-        <div class="mask rgba-white-slight"></div>
-      </a>
-    </div>
-    <div class="card-body elegant-color white-text rounded-bottom">
-      <!-- Title -->
-      <h4 class="card-title">{{ client.name }}</h4>
-      <hr class="hr-light">
-      <!-- Text -->
+    <div class="myclient-info ml-3">
+      <h4 class="">{{ client.name }}</h4>
+      <p>{{ client.progress }}</p>
       <div class="other-details">
           <div class="levels">
             {% if client.progress == "Assessment" %}

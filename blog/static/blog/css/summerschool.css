@@ -16,7 +16,11 @@ body {
   font-weight: bold;
 }
 
-form small#hint_id_usefulness, form #hint_id_participate, form #hint_id_recommend, form #hint_id_something_new {
+form small#hint_id_usefulness, form #hint_id_participate, form #hint_id_recommend, form #hint_id_something_new, form #hint_id_report_doc, form #hint_id_ratings, form #hint_id_improvement {
+  color: #fff !important;
+}
+
+form .form-text .text-muted {
   color: #fff !important;
 }
 
